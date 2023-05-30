@@ -2,11 +2,26 @@ import React from 'react';
 import { nanoid } from 'nanoid';
 import { Container, Section, ContactForm, ContactList, Filter, Heading } from 'components';
 
+const LS_KEY = 'contactsLS';
+
 export class App extends React.Component {
   state = {
     contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const savedState = JSON.parse(localStorage.getItem(LS_KEY));
+    if (savedState) {
+      this.setState({ contacts: savedState });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem(LS_KEY, JSON.stringify(this.state.contacts));
+    }
+  }
 
   handleFilterChange = e => {
     this.setState({ filter: e.target.value });
